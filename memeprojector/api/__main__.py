@@ -1,24 +1,35 @@
+import numpy as np
 import pyproj
 import uvicorn
 from fastapi import FastAPI
+from PIL import Image
 from pydantic import BaseModel
 
 app = FastAPI()
 
+
 class Item(BaseModel):
-    image: str
+    image: list
     epsg: int
+
 
 @app.get("/")
 def index():
     return {"text": "Welcome to our EPSG projection application!"}
 
+
 @app.post("/project")
-def project(item: Item):
+def project_image(item: Item):
+    array = np.array(item.image)
+    rgb_array = (array * 255).astype(np.uint8)
+    image = Image.fromarray(rgb_array)
+    image.save("output_image.png")
+
     return {
         "image": item.image,
-        "epsg": item.epsg
-        }
+        "epsg": item.epsg,
+    }
+
 
 @app.get("/list_projections")
 def list_projections():
