@@ -33,6 +33,10 @@ def project_image(item: Item):
 
 @app.get("/list_projections")
 def list_projections():
+    return PROJECTIONS
+
+
+def load_projections():
     codes = pyproj.get_codes("EPSG", "CRS")
     projections = [code for code in codes if pyproj.CRS.from_epsg(code).type_name == "Derived Projected CRS"]
 
@@ -40,4 +44,5 @@ def list_projections():
 
 
 if __name__ == "__main__":
+    PROJECTIONS = load_projections()
     uvicorn.run(app, host="0.0.0.0", port=8000)
