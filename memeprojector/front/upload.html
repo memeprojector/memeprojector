@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Meme Generator</title>
+  </head>
+  <body>
+    <h1>Meme Generator</h1>
+    <form id="my-form">
+      <label for="integer">Select an integer:</label>
+      <select id="integer" name="integer">
+        <!-- options will be added dynamically using JavaScript -->
+      </select>
+      <br>
+      <label for="file">Select an image:</label>
+      <input type="file" id="file" name="file">
+      <br>
+	  <div>
+	  	<img id="selected-image" src="" style="width: 256px; height: 256px;">
+		<br>
+		<img id="processed-image" src="" style="width: 256px; height: 256px;">
+	  </div>
+      <input type="submit" value="Submit">
+      <br>
+    </form>
+  </body>
+</html>
+
+<script>
+  // EPSG Selector
+  const integerSelect = document.getElementById("integer");
+
+  fetch("/integers")
+    .then(response => response.json())
+    .then(integers => {
+      integers.forEach(integer => {
+        const option = document.createElement("option");
+        option.value = integer;
+        option.textContent = integer;
+        integerSelect.appendChild(option);
+      });
+    });
+
+  // Image Selector
+  var imageSelector = document.getElementById("file");
+  var selectedImage = document.getElementById("selected-image");
+
+  imageSelector.addEventListener("change", function() {
+    var reader = new FileReader();
+
+    reader.addEventListener("load", function() {
+      selectedImage.src = reader.result;
+    });
+
+    reader.readAsDataURL(imageSelector.files[0]);
+  });
+
+</script>
